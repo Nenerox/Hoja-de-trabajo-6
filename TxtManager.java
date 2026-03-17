@@ -10,6 +10,8 @@ import java.util.*;
  * el resultado final de la calculadora.
  */
 public class TxtManager {
+    private Map<String, List<Producto>> porCategoria = new HashMap<>();
+    private Map<String, Producto> porNombre = new HashMap<>();
 
     /**
      * Lee el contenido de un archivo y elimina todos los espacios.
@@ -32,12 +34,21 @@ public class TxtManager {
                 String categoria = partes[0].trim();
                 String nombre = partes[1].trim();
                 Producto producto = new Producto(nombre, categoria);
-                mapa.putIfAbsent(categoria, new ArrayList<>());
-                mapa.get(categoria).add(producto);
+                porCategoria.putIfAbsent(categoria, new ArrayList<>());
+                porCategoria.get(categoria).add(producto);
+
+                porNombre.put(nombre, producto);
             }
         } catch (IOException e){
             System.err.println("Error al leer archivo: " + e.getMessage());
         }
         return mapa;
+    }
+    public Map<String, List<Producto>> getPorCategoria() {
+        return porCategoria;
+    }
+
+    public Map<String, Producto> getPorNombre() {
+        return porNombre;
     }
 }
