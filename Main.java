@@ -50,7 +50,7 @@ public class Main {
         }
 
         TxtManager txt = new TxtManager();
-        txt.cargarProductos("Hoja-de-trabajo-6/ListadoProducto.txt");
+        txt.cargarProductos("ListadoProducto.txt");
 
         Inventario inv = new Inventario(
                 txt.getPorNombre(),
@@ -77,7 +77,7 @@ public class Main {
                     System.out.print("Ingrese categoría: ");
                     String categoria = scanner.nextLine();
 
-                    List<Producto> lista = txt.getPorCategoria().get(categoria);
+                    List<Producto> lista = txt.getPorCategoria().get(inv.stripDiacritics(categoria));
 
                     if (lista == null) {
                         System.out.println("Categoría no existe.");
@@ -92,9 +92,9 @@ public class Main {
                     System.out.print("Ingrese producto: ");
                     String nombre = scanner.nextLine();
 
-                    Producto producto = txt.getPorNombre().get(nombre);
+                    Producto producto = txt.getPorNombre().get(inv.stripDiacritics(nombre));
 
-                    if (producto == null || !producto.getCategoria().equals(categoria)) {
+                    if (producto == null || !inv.stripDiacritics(producto.getCategoria()).equalsIgnoreCase(inv.stripDiacritics(categoria))) {
                         System.out.println("Producto inválido para esa categoría.");
                         break;
                     }

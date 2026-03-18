@@ -80,7 +80,8 @@ public class Producto implements Comparable<Producto> {
      */
     private String stripDiacritics(String s) {
         String normalized = Normalizer.normalize(s, Form.NFD);
-        return normalized.replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
+        String normal = normalized.replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
+        return normal.toLowerCase().trim();
     }
 
     /**

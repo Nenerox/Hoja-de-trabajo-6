@@ -1,3 +1,5 @@
+import java.text.Normalizer;
+import java.text.Normalizer.Form;
 import java.util.*;
 
 /**
@@ -44,7 +46,7 @@ public class Inventario {
             return;
         }
 
-        Producto producto = mapaPorNombre.get(nombre);
+        Producto producto = mapaPorNombre.get(stripDiacritics(nombre));
 
         if (producto == null) {
             System.out.println("Producto no encontrado");
@@ -188,5 +190,17 @@ public class Inventario {
         for (String categoria : mapaPorCategoria.keySet()) {
             System.out.println(categoria);
         }
+    }
+
+     /**
+     * Transofrma el string ingresado a una version NFD donde se eliminan los acentos para una mejor comparacion
+     * 
+     * @param s String orignial
+     * @return Version del string normalizada sin acentos
+     */
+    public String stripDiacritics(String s) {
+        String normalized = Normalizer.normalize(s, Form.NFD);
+        String normal = normalized.replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
+        return normal.toLowerCase().trim();
     }
 }

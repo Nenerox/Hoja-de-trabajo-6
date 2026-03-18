@@ -1,7 +1,10 @@
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.text.Normalizer;
+import java.text.Normalizer.Form;
 import java.util.*;
+
 
 /**
  * Gestiona la carga de productos desde un .txt
@@ -48,10 +51,13 @@ public class TxtManager {
 
                 Producto producto = new Producto(nombre, categoria);
 
-                porCategoria.putIfAbsent(categoria, new ArrayList<>());
-                porCategoria.get(categoria).add(producto);
+                String categoriaKey = stripDiacritics(categoria);
+                String nombreKey = stripDiacritics(nombre);
 
-                porNombre.put(nombre, producto);
+                porCategoria.putIfAbsent(categoriaKey, new ArrayList<>());
+                porCategoria.get(categoriaKey).add(producto);
+
+                porNombre.put(nombreKey, producto);
             }
 
         } catch (IOException e) {
@@ -75,5 +81,17 @@ public class TxtManager {
      */
     public Map<String, Producto> getPorNombre() {
         return porNombre;
+    }
+
+    /**
+     * Transofrma el string ingresado a una version NFD donde se eliminan los acentos para una mejor comparacion
+     * 
+     * @param s String orignial
+     * @return Version del string normalizada sin acentos
+     */
+    private String stripDiacritics(String s) {
+        String normalized = Normalizer.normalize(s, Form.NFD);
+        String normal = normalized.replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
+        return normal.toLowerCase().trim();    
     }
 }
