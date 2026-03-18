@@ -8,9 +8,11 @@ import java.util.*;
  */
 public class Inventario {
 
+    Factory factory = new Factory();
     private Map<String, Producto> mapaPorNombre;
     private Map<String, List<Producto>> mapaPorCategoria;
     private Map<Producto, ProductoUsuario> coleccionUsuario;
+    private int tipoMapa;
 
     /**
      * Construye un inventario utilizando mapas previamente cargados.
@@ -22,11 +24,10 @@ public class Inventario {
     public Inventario(Map<String, Producto> porNombre,
                       Map<String, List<Producto>> porCategoria,
                       int tipoMapa) {
-
-        Factory factory = new Factory();
-
+        this.tipoMapa = tipoMapa;
         this.mapaPorNombre = porNombre;
-        this.mapaPorCategoria = porCategoria;
+        this.mapaPorCategoria = factory.crearMapa(tipoMapa);
+        this.mapaPorCategoria.putAll(porCategoria);
         this.coleccionUsuario = factory.crearMapa(tipoMapa);
     }
 
@@ -107,7 +108,7 @@ public class Inventario {
             return;
         }
 
-        Map<String, List<ProductoUsuario>> agrupado = new TreeMap<>();
+        Map<String, List<ProductoUsuario>> agrupado = factory.crearMapa(tipoMapa);
 
         for (ProductoUsuario item : coleccionUsuario.values()) {
             String categoria = item.getProducto().getCategoria();
@@ -149,7 +150,7 @@ public class Inventario {
             return;
         }
 
-        Map<String, List<Producto>> ordenado = new TreeMap<>(mapaPorCategoria);
+        Map<String, List<Producto>> ordenado = mapaPorCategoria;
 
         for (String categoria : ordenado.keySet()) {
             System.out.println("Categoría: " + categoria);

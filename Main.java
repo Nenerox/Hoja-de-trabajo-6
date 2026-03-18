@@ -49,7 +49,7 @@ public class Main {
             tipoMapa = 1;
         }
 
-        TxtManager txt = new TxtManager();
+        TxtManager txt = new TxtManager(tipoMapa);
         txt.cargarProductos("ListadoProducto.txt");
 
         Inventario inv = new Inventario(

@@ -22,9 +22,15 @@ import java.util.*;
  * </p>
  */
 public class TxtManager {
+    Factory factory = new Factory();
 
-    private Map<String, List<Producto>> porCategoria = new HashMap<>();
-    private Map<String, Producto> porNombre = new HashMap<>();
+    private Map<String, List<Producto>> porCategoria;
+    private Map<String, Producto> porNombre;
+
+    public TxtManager(int tipoMapa) {
+        this.porCategoria = factory.crearMapa(tipoMapa);
+        this.porNombre = factory.crearMapa(tipoMapa);
+    }
 
     /**
      * Carga productos desde un archivo de texto.
