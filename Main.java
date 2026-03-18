@@ -15,7 +15,7 @@ public class Main {
         scanner.nextLine();
 
         TxtManager txt = new TxtManager();
-        txt.cargarProductos("ListadoProducto.txt");
+        txt.cargarProductos("Hoja-de-trabajo-6/ListadoProducto.txt");
 
         Inventario inv = new Inventario(
             txt.getPorNombre(),
