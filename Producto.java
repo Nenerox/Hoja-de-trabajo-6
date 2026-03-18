@@ -107,12 +107,12 @@ public class Producto implements Comparable<Producto> {
     @Override
     public int compareTo(Producto otro)
     {
-        int comparar = this.nombre.compareTo(otro.nombre);
+        int comparar = (stripDiacritics(this.nombre.strip())).compareTo(stripDiacritics(otro.nombre.strip()));
         if(comparar != 0)
         {
             return comparar;
         }
-        return this.categoria.compareTo(otro.categoria);
+        return (stripDiacritics(this.categoria.strip())).compareTo(stripDiacritics(otro.categoria.strip()));
     }
 
     /**
