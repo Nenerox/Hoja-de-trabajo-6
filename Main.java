@@ -1,39 +1,41 @@
+import java.util.List;
 import java.util.Scanner;
 
 /**
- * Clase principal del programa. 
- * <p>
- * Se encarga de interactuar con el usuario, permitir la selección del tipo de mapa 
- * a utilizar, cargar los productos desde un archivo de texto y ofrecer un menú para 
- * gestionar el inventario.
+ * Gestiona la interacción con el usuario mediante un menú en consola
+ * que permite consultar y manipular un inventario de productos.
  * </p>
  *
- * <p>
- * A través de esta clase se coordinan las operaciones principales del sistema:
- * </p>
+ * <p>El usuario puede:</p>
  * <ul>
- *     <li>Seleccionar la implementación de {@code Map}.</li>
- *     <li>Cargar productos mediante {@link TxtManager}.</li>
- *     <li>Crear un {@link Inventario}.</li>
- *     <li>Realizar operaciones como agregar productos, mostrar categorías, etc.</li>
+ *     <li>Agregar productos según su categoría.</li>
+ *     <li>Consultar la categoría de un producto.</li>
+ *     <li>Ver su colección personal de productos.</li>
+ *     <li>Ver la colección ordenada por categoría.</li>
+ *     <li>Ver todo el inventario original.</li>
+ *     <li>Ver el inventario ordenado por categoría.</li>
  * </ul>
+ *
+ * <p>
+ * El programa también permite elegir la implementación de {@link java.util.Map}
+ * que se usará para almacenar la colección del usuario.
+ * </p>
  */
 public class Main {
 
     /**
      * Método de entrada del programa.
      * <p>
-     * Despliega un menú interactivo que permite al usuario gestionar un inventario
-     * de productos utilizando diferentes implementaciones de mapas.
+     * Solicita al usuario elegir un tipo de mapa, carga los productos desde un archivo,
+     * crea el inventario y muestra un menú interactivo para realizar distintas operaciones.
      * </p>
      *
-     * @param args argumentos de línea de comandos (no utilizados)
+     * @param args argumentos de línea de comandos
      */
     public static void main(String[] args) {
 
         Scanner scanner = new Scanner(System.in);
 
-        // Selección de mapa
         System.out.println("Seleccione tipo de mapa:");
         System.out.println("1. HashMap");
         System.out.println("2. TreeMap");
@@ -42,22 +44,29 @@ public class Main {
         int tipoMapa = scanner.nextInt();
         scanner.nextLine();
 
+        if (tipoMapa < 1 || tipoMapa > 3) {
+            System.out.println("Tipo inválido, se usará HashMap por defecto.");
+            tipoMapa = 1;
+        }
+
         TxtManager txt = new TxtManager();
         txt.cargarProductos("Hoja-de-trabajo-6/ListadoProducto.txt");
 
         Inventario inv = new Inventario(
-            txt.getPorNombre(),
-            txt.getPorCategoria(),
-            tipoMapa
+                txt.getPorNombre(),
+                txt.getPorCategoria(),
+                tipoMapa
         );
 
         while (true) {
             System.out.println("\n--- MENU ---");
-            System.out.println("1. Agregar producto");
-            System.out.println("2. Mostrar colección");
-            System.out.println("3. Mostrar categorías");
-            System.out.println("4. Mostrar productos por categoría");
-            System.out.println("5. Salir");
+            System.out.println("1. Agregar producto por categoría");
+            System.out.println("2. Mostrar categoría de un producto");
+            System.out.println("3. Mostrar colección del usuario");
+            System.out.println("4. Mostrar colección ordenada por categoría");
+            System.out.println("5. Mostrar todo el inventario");
+            System.out.println("6. Mostrar inventario ordenado por categoría");
+            System.out.println("7. Salir");
 
             int opcion = scanner.nextInt();
             scanner.nextLine();
@@ -65,26 +74,58 @@ public class Main {
             switch (opcion) {
 
                 case 1:
-                    System.out.print("Nombre del producto: ");
+                    System.out.print("Ingrese categoría: ");
+                    String categoria = scanner.nextLine();
+
+                    List<Producto> lista = txt.getPorCategoria().get(categoria);
+
+                    if (lista == null) {
+                        System.out.println("Categoría no existe.");
+                        break;
+                    }
+
+                    System.out.println("Productos disponibles:");
+                    for (Producto p : lista) {
+                        System.out.println("- " + p.getNombre());
+                    }
+
+                    System.out.print("Ingrese producto: ");
                     String nombre = scanner.nextLine();
+
+                    Producto producto = txt.getPorNombre().get(nombre);
+
+                    if (producto == null || !producto.getCategoria().equals(categoria)) {
+                        System.out.println("Producto inválido para esa categoría.");
+                        break;
+                    }
+
                     inv.agregarProducto(nombre);
+                    System.out.println("Producto agregado.");
                     break;
 
                 case 2:
-                    inv.mostrarColeccion();
+                    System.out.print("Ingrese nombre del producto: ");
+                    nombre = scanner.nextLine();
+                    inv.mostrarCategoriaDeProducto(nombre);
                     break;
 
                 case 3:
-                    inv.mostrarCategorias();
+                    inv.mostrarColeccion();
                     break;
 
                 case 4:
-                    System.out.print("Categoría: ");
-                    String categoria = scanner.nextLine();
-                    inv.mostrarPorCategoria(categoria);
+                    inv.mostrarColeccionOrdenadaPorCategoria();
                     break;
 
                 case 5:
+                    inv.mostrarTodo();
+                    break;
+
+                case 6:
+                    inv.mostrarTodoOrdenadoPorCategoria();
+                    break;
+
+                case 7:
                     System.out.println("Hasta pronto");
                     return;
 
