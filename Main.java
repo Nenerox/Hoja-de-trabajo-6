@@ -1,6 +1,34 @@
 import java.util.Scanner;
 
+/**
+ * Clase principal del programa. 
+ * <p>
+ * Se encarga de interactuar con el usuario, permitir la selección del tipo de mapa 
+ * a utilizar, cargar los productos desde un archivo de texto y ofrecer un menú para 
+ * gestionar el inventario.
+ * </p>
+ *
+ * <p>
+ * A través de esta clase se coordinan las operaciones principales del sistema:
+ * </p>
+ * <ul>
+ *     <li>Seleccionar la implementación de {@code Map}.</li>
+ *     <li>Cargar productos mediante {@link TxtManager}.</li>
+ *     <li>Crear un {@link Inventario}.</li>
+ *     <li>Realizar operaciones como agregar productos, mostrar categorías, etc.</li>
+ * </ul>
+ */
 public class Main {
+
+    /**
+     * Método de entrada del programa.
+     * <p>
+     * Despliega un menú interactivo que permite al usuario gestionar un inventario
+     * de productos utilizando diferentes implementaciones de mapas.
+     * </p>
+     *
+     * @param args argumentos de línea de comandos (no utilizados)
+     */
     public static void main(String[] args) {
 
         Scanner scanner = new Scanner(System.in);
