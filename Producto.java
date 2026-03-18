@@ -1,3 +1,6 @@
+import java.text.Normalizer;
+import java.text.Normalizer.Form;
+
 /**
  * Representa un producto con un nombre y una categoría.
  * <p>
@@ -66,7 +69,18 @@ public class Producto implements Comparable<Producto> {
             return false;
         }
         Producto otro = (Producto) objeto;
-        return nombre.equals(otro.nombre) && categoria.equals(otro.categoria);
+        return (stripDiacritics(nombre.strip())).equalsIgnoreCase(stripDiacritics(otro.nombre.strip())) && (stripDiacritics(categoria.strip())).equalsIgnoreCase(stripDiacritics(otro.categoria.strip()));
+    }
+    
+    /**
+     * Transofrma el string ingresado a una version NFD donde se eliminan los acentos para una mejor comparacion
+     * 
+     * @param s String orignial
+     * @return Version del string normalizada sin acentos
+     */
+    private String stripDiacritics(String s) {
+        String normalized = Normalizer.normalize(s, Form.NFD);
+        return normalized.replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
     }
 
     /**
