@@ -4,9 +4,9 @@ import java.util.Map;
 import java.util.TreeMap;
 
 public class Factory {
-    
-    public Map<String, Producto> crearMapa(int mapa) {
-        switch (mapa) {
+
+    public <K, V> Map<K, V> crearMapa(int tipo) {
+        switch (tipo) {
             case 1:
                 return new HashMap<>();
             case 2:
@@ -14,8 +14,7 @@ public class Factory {
             case 3:
                 return new LinkedHashMap<>();
             default:
-                throw new AssertionError("Implementacion de mapa no dispoible");
+                throw new IllegalArgumentException("Implementación no disponible");
         }
     }
-
 }
