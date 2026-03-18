@@ -1,18 +1,8 @@
 import java.util.*;
 
 /**
- * Clase que gestiona un inventario de productos, permitiendo organizarlos por nombre,
- * categoría y también registrar una colección personalizada por parte del usuario.
- *
+ * Inventario de productos cargados por nombre y por categoría.
  * <p>
- * Esta clase utiliza tres estructuras principales:
- * </p>
- * <ul>
- *     <li><b>mapaPorNombre:</b> relaciona el nombre del producto con su instancia.</li>
- *     <li><b>mapaPorCategoria:</b> agrupa listas de productos por categoría.</li>
- *     <li><b>coleccionUsuario:</b> almacena productos adquiridos o seleccionados por el usuario,
- *         usando la implementación de {@link Map} definida mediante {@code tipoMapa}.</li>
- * </ul>
  */
 public class Inventario {
 
@@ -21,16 +11,15 @@ public class Inventario {
     private Map<Producto, ProductoUsuario> coleccionUsuario;
 
     /**
-     * Construye un inventario utilizando mapas para organizar productos por nombre
-     * y por categoría. Además, emplea un {@link Factory} para crear la estructura utilizada en
-     * la colección personalizada del usuario.
+     * Construye un inventario utilizando mapas previamente cargados.
      *
-     * @param porNombre     mapa que relaciona nombres de productos con las instancias correspondientes
-     * @param porCategoria  mapa que agrupa listas de productos por categoría
-     * @param tipoMapa      entero que define qué implementación de {@link Map} se usará
-     *                      para la colección del usuario (delegado a {@link Factory#crearMapa(int)})
+     * @param porNombre     mapa que relaciona un nombre con su producto
+     * @param porCategoria  mapa que agrupa productos por categoría
+     * @param tipoMapa      tipo de mapa a utilizar para la colección del usuario
      */
-    public Inventario(Map<String, Producto> porNombre, Map<String, List<Producto>> porCategoria, int tipoMapa) {
+    public Inventario(Map<String, Producto> porNombre,
+                      Map<String, List<Producto>> porCategoria,
+                      int tipoMapa) {
 
         Factory factory = new Factory();
 
@@ -40,21 +29,23 @@ public class Inventario {
     }
 
     /**
-     * Agrega un producto a la colección del usuario según su nombre.
+     * Agrega un producto a la colección del usuario a partir de su nombre.
      * <p>
-     * Si el producto ya existe en la colección, su cantidad aumenta en uno.
-     * Si aún no existe, se incorpora con cantidad inicial igual a 1.
+     * Si el producto ya existe, aumenta su cantidad.  
+     * Si no existe, lo agrega con cantidad inicial de 1.
      * </p>
      *
-     * @param nombre nombre del producto que se desea agregar
+     * @param nombre nombre del producto a agregar
      */
     public void agregarProducto(String nombre) {
+
         if (nombre == null || nombre.isEmpty()) {
             System.out.println("Nombre inválido");
             return;
         }
 
         Producto producto = mapaPorNombre.get(nombre);
+
         if (producto == null) {
             System.out.println("Producto no encontrado");
             return;
@@ -70,9 +61,26 @@ public class Inventario {
     }
 
     /**
-     * Muestra por consola la colección de productos del usuario.
+     * Muestra la categoría del producto cuyo nombre se proporciona.
+     *
+     * @param nombre nombre del producto buscado
+     */
+    public void mostrarCategoriaDeProducto(String nombre) {
+
+        Producto producto = mapaPorNombre.get(nombre);
+
+        if (producto == null) {
+            System.out.println("Producto no encontrado");
+            return;
+        }
+
+        System.out.println("Categoría: " + producto.getCategoria());
+    }
+
+    /**
+     * Muestra la colección del usuario.
      * <p>
-     * Si la colección está vacía, se informa al usuario.
+     * Si no tiene productos agregados, informa que la colección está vacía.
      * </p>
      */
     public void mostrarColeccion() {
@@ -81,15 +89,78 @@ public class Inventario {
             System.out.println("La colección está vacía.");
             return;
         }
+
         for (ProductoUsuario item : coleccionUsuario.values()) {
             System.out.println(item);
         }
     }
 
     /**
-     * Muestra todos los productos asociados a una categoría específica.
+     * Muestra la colección del usuario agrupada y ordenada por categoría.
+     */
+    public void mostrarColeccionOrdenadaPorCategoria() {
+
+        if (coleccionUsuario.isEmpty()) {
+            System.out.println("La colección está vacía.");
+            return;
+        }
+
+        Map<String, List<ProductoUsuario>> agrupado = new TreeMap<>();
+
+        for (ProductoUsuario item : coleccionUsuario.values()) {
+            String categoria = item.getProducto().getCategoria();
+
+            agrupado.putIfAbsent(categoria, new ArrayList<>());
+            agrupado.get(categoria).add(item);
+        }
+
+        for (String categoria : agrupado.keySet()) {
+            System.out.println("Categoría: " + categoria);
+            for (ProductoUsuario item : agrupado.get(categoria)) {
+                System.out.println("  " + item);
+            }
+        }
+    }
+
+    /**
+     * Muestra todos los productos registrados
+     */
+    public void mostrarTodo() {
+
+        if (mapaPorNombre.isEmpty()) {
+            System.out.println("No hay productos.");
+            return;
+        }
+
+        for (Producto p : mapaPorNombre.values()) {
+            System.out.println(p.getNombre() + " - " + p.getCategoria());
+        }
+    }
+
+    /**
+     * Muestra todos los productos ordenados por categoría.
+     */
+    public void mostrarTodoOrdenadoPorCategoria() {
+
+        if (mapaPorCategoria.isEmpty()) {
+            System.out.println("No hay productos.");
+            return;
+        }
+
+        Map<String, List<Producto>> ordenado = new TreeMap<>(mapaPorCategoria);
+
+        for (String categoria : ordenado.keySet()) {
+            System.out.println("Categoría: " + categoria);
+            for (Producto p : ordenado.get(categoria)) {
+                System.out.println("  " + p.getNombre());
+            }
+        }
+    }
+
+    /**
+     * Muestra los productos pertenecientes a una categoría específica.
      *
-     * @param categoria cadena que identifica la categoría buscada
+     * @param categoria categoría a consultar
      */
     public void mostrarPorCategoria(String categoria) {
 
@@ -99,14 +170,14 @@ public class Inventario {
             System.out.println("Categoría no encontrada");
             return;
         }
+
         for (Producto p : lista) {
             System.out.println(p);
         }
     }
 
     /**
-     * Muestra por consola los nombres de todas las categorías disponibles
-     * dentro del inventario.
+     * Muestra todas las categorías registradas.
      */
     public void mostrarCategorias() {
 
